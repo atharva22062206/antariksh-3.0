@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html>
+<head>
+	
+    <style>
+	header {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin: 2px 0;
+}
+
+header img {
+	height: 300px;
+	margin-right: 5px;
+}
+
+  /* Body and Header styles */
+body {
+	font-family: Arial, sans-serif;
+}
+
+h1 {
+	text-align: center;
+	font-size: 36px;
+	margin: 20px 0;
+}
+
+/* Form styles */
+form {
+	display: flex;
+	flex-wrap: wrap;
+	max-width: 600px;
+	margin: 0 auto;
+}
+
+label {
+	display: block;
+	font-size: 18px;
+	margin: 10px 0;
+}
+
+input[type="text"],
+input[type="date"],
+input[type="time"] {
+	font-size: 16px;
+	padding: 15px;
+	border: none;
+	border-radius: 5px;
+	margin-bottom: 20px;
+	box-shadow: 0 1px 1px rgba(0,0,0,0.1);
+	
+}
+
+button[type="button"] {
+	background-color: #4CAF50;
+	color: white;
+	border: none;
+	padding: 10px 20px;
+	border-radius: 50px;
+	font-size: 16px;
+	cursor: pointer;
+	margin-top: 20px;
+	margin-left: auto;
+	margin-bottom: 20px;
+}
+
+button[type="button"]:hover {
+	background-color: #3e8e41;
+}
+
+/* Calendar styles */
+#calendar-container {
+	max-width: 800px;
+	margin: 0 auto;
+	background-color: rgba(255, 255, 255, 0.352);
+}
+
+table {
+	border-collapse: collapse;
+	width: 100%;
+}
+
+th {
+	text-align: left;
+	background-color: #4CAF50;
+	
+	padding: 10px;
+	color: white;
+}
+
+th:first-child {
+	border-top-left-radius: 5px;
+}
+
+th:last-child {
+	border-top-right-radius: 5px;
+}
+
+td {
+	padding: 5px;
+	border: 1px solid #ddd;
+	text-align: center;
+	vertical-align: middle;
+	height: 100px;
+	position: relative;
+}
+
+td:hover {
+	background-color: #f5f5f5;
+}
+
+td.current-day {
+	background-color: #4CAF50;
+	color: white;
+}
+
+td.current-day:hover {
+	background-color: #3e8e41;
+}
+
+td.current-day:after {
+	content: "Today";
+	position: absolute;
+	top: 5px;
+	right: 5px;
+	font-size: 14px;
+	color: white;
+}
+
+td.has-announcement {
+	background-color: #2196F3;
+	color: white;
+}
+
+td.has-announcement:hover {
+	background-color: #0c7cd5;
+}
+
+td.has-announcement:after {
+	content: "Announcement";
+	position: absolute;
+	top: 5px;
+	right: 5px;
+	font-size: 14px;
+	color: white;
+}
+
+.announcement-list {
+	max-height: 80px;
+	overflow: auto;
+}
+
+.announcement-item {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	font-size: 14px;
+	margin-bottom: 5px;
+}
+
+.announcement-item button {
+	background-color: #2196F3;
+	color: white;
+	border: none;
+	padding: 5px 10px;
+	border-radius: 5px;
+	font-size: 12px;
+	cursor: pointer;
+}
+
+.announcement-item button:hover {
+	background-color: #0c7cd5;
+}
+body {
+	font-family: Arial, sans-serif;
+	background: linear-gradient(rgba(249, 248, 248, 0), rgba(0, 0, 0, 0)), url("https://img.freepik.com/free-vector/structural-geometrical-app-cover-template_79603-1306.jpg?w=1380&t=st=1680376158~exp=1680376758~hmac=5434fa215294475dfce00b69bf8acc8cd448b94e5c37198a0c141a0144d23d7e");
+	background-size: cover;
+	background-position: center center;
+	background-attachment: fixed;
+}
+
+    </style>
+	<header>
+		<img src="C:\mini final\download.svg" alt="Logo">
+	
+	</header>
+	
+	<title></title>
+	<script src="https://code.responsivevoice.org/responsivevoice.js?key=bazrfGFo"></script>
+	<script>
+		let announcements = [];
+
+		function addAnnouncement() {
+			let faculty = document.getElementById("faculty").value;
+			let subject = document.getElementById("subject").value;
+			let date = document.getElementById("date").value;
+			let time = document.getElementById("time").value;
+
+			let announcement = {
+				faculty: faculty,
+				subject: subject,
+				date: date,
+				time: time
+			};
+
+			announcements.push(announcement);
+
+			// clear form inputs
+			document.getElementById("faculty").value = "";
+			document.getElementById("subject").value = "";
+			document.getElementById("date").value = "";
+			document.getElementById("time").value = "";
+
+			saveAnnouncements();
+		}
+
+		function editAnnouncement(index) {
+			let announcement = announcements[index];
+
+			// populate form with announcement data
+			document.getElementById("faculty").value = announcement.faculty;
+			document.getElementById("subject").value = announcement.subject;
+			document.getElementById("date").value = announcement.date;
+			document.getElementById("time").value = announcement.time;
+
+			// remove announcement from list
+			announcements.splice(index, 1);
+
+			saveAnnouncements();
+		}
+
+		function deleteAnnouncement(index) {
+			announcements.splice(index, 1);
+
+			saveAnnouncements();
+		}
+
+		function saveAnnouncements() {
+			localStorage.setItem("announcements", JSON.stringify(announcements));
+
+			displayCalendar();
+		}
+
+		function loadAnnouncements() {
+			let storedAnnouncements = localStorage.getItem("announcements");
+
+			if (storedAnnouncements) {
+				announcements = JSON.parse(storedAnnouncements);
+			}
+
+			displayCalendar();
+		}
+
+		function displayCalendar() {
+			let now = new Date();
+
+			let calendarTable = document.createElement("table");
+			calendarTable.setAttribute("id", "calendar");
+
+			// create table header
+			let headerRow = document.createElement("tr");
+
+			let weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+			for (let i = 0; i < weekdays.length; i++) {
+				let headerCell = document.createElement("th");
+				headerCell.textContent = weekdays[i];
+				headerRow.appendChild(headerCell);
+			}
+
+			calendarTable.appendChild(headerRow);
+
+			// create table rows
+			let month = now.getMonth();
+			let year = now.getFullYear();
+
+			for (let day = 1; day <= 31; day++) {
+				let date = new Date(year, month, day);
+
+				if (date.getMonth() != month) {
+					break;
+				}
+
+				let row = document.createElement("tr");
+
+				for (let i = 0; i < 7; i++) {
+					let cell = document.createElement("td");
+					cell.setAttribute("class", "day");
+
+					if (date.getDay() == i) {
+						cell.textContent = day;
+
+						// add announcements for this day
+						let dayAnnouncements = announcements.filter(function(announcement) {
+							return announcement.date == formatDate(date);
+						});
+
+						if (dayAnnouncements.length > 0) {
+							let announcementList = document.createElement("ul");
+
+							for (let j = 0; j < dayAnnouncements.length; j++) {
+								let announcement = dayAnnouncements[j];
+
+								let announcementItem = document.createElement("li");
+								announcementItem.textContent = announcement.subject +" by " + announcement.faculty;
+								let editButton = document.createElement("button");
+								editButton.textContent = "Edit";
+								editButton.addEventListener("click", function() {
+									editAnnouncement(announcements.indexOf(announcement));
+								});
+								announcementItem.appendChild(editButton);
+	
+								let deleteButton = document.createElement("button");
+								deleteButton.textContent = "Delete";
+								deleteButton.addEventListener("click", function() {
+									deleteAnnouncement(announcements.indexOf(announcement));
+								});
+								announcementItem.appendChild(deleteButton);
+	
+								announcementList.appendChild(announcementItem);
+	
+								// text-to-speech announcement
+								let announcementText = "Next lecture " + announcement.subject + " by " + announcement.faculty;
+								responsiveVoice.speak(announcementText, "UK English Male");
+							}
+	
+							cell.appendChild(announcementList);
+						}
+					}
+	
+					row.appendChild(cell);
+				}
+	
+				calendarTable.appendChild(row);
+			}
+	
+			let calendarContainer = document.getElementById("calendar-container");
+			calendarContainer.innerHTML = "";
+			calendarContainer.appendChild(calendarTable);
+		}
+	
+		function formatDate(date) {
+			let year = date.getFullYear();
+			let month = date.getMonth() + 1;
+			let day = date.getDate();
+	
+			if (month < 10) {
+				month = "0" + month;
+			}
+	
+			if (day < 10) {
+				day = "0" + day;
+			}
+	
+			return year + "-" + month + "-" + day;
+		}
+	</script>
+	</head>
+<body onload="loadAnnouncements()">
+	
+	<form>
+		<label for="faculty">Faculty:</label>
+		<input type="text" id="faculty" name="faculty"><br>
+	
+		<label for="subject">Subject:</label>
+		<input type="text" id="subject" name="subject"><br>
+	
+		<label for="date">Date:</label>
+		<input type="date" id="date" name="date"><br>
+	
+		<label for="time">Time:</label>
+		<input type="time" id="time" name="time"><br>
+	
+		<button type="button" onclick="addAnnouncement()">Add Announcement</button>
+	</form>
+	
+	<div id="calendar-container"></div>
+</body>
+</html>		
