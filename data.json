@@ -1,0 +1,30 @@
+// Example code to append user input data to the data.json file on GitHub
+
+let data = {
+  name: "John Doe",
+  email: "johndoe@example.com",
+  message: "Hello world!"
+};
+
+fetch("https://api.github.com/repos/atharva22062206/antariksh-3.0/contents/data.json", {
+  method: "PUT",
+  headers: {
+    Authorization: "Bearer atharva",
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    message: "Add user input data",
+    content: btoa(JSON.stringify(data)),
+    sha: "{current-sha-of-data-json-file}"
+  })
+})
+  .then(response => {
+    if (response.ok) {
+      console.log("User input data added successfully");
+    } else {
+      console.error("Error adding user input data:", response.statusText);
+    }
+  })
+  .catch(error => {
+    console.error("Error adding user input data:", error);
+  });
