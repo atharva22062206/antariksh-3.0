@@ -15,7 +15,7 @@ fetch("https://api.github.com/repos/atharva22062206/antariksh-3.0/contents/data.
   body: JSON.stringify({
     message: "Add user input data",
     content: btoa(JSON.stringify(data)),
-    sha: "{current-sha-of-data-json-file}"
+    sha: "4d336bca516ffee9e2d5f919aa8ab114af1c0a09"
   })
 })
   .then(response => {
