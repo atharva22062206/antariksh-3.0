@@ -327,7 +327,7 @@ body {
 	
 								// text-to-speech announcement
 								let announcementText = "Next lecture " + announcement.subject + " by " + announcement.faculty;
-								responsivevoice.speak(announcementText, "UK English Male");
+								responsiveVoice.speak(announcementText, "UK English Male");
 							}
 	
 							cell.appendChild(announcementList);
@@ -381,5 +381,7 @@ body {
 	</form>
 	
 	<div id="calendar-container"></div>
+
 </body>
 </html>		
+<script>
